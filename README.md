@@ -64,6 +64,35 @@ addEventListener("fetch", async (event) => {
     - **Tencent EdgeOne:** `EdgeOne` -> `Metrics` -> `L7 Access Requests` -> `Add Filter (Domain: your domain)`
     - **Alibaba Cloud ESA:** `ESA Console` -> `Websites` -> `Traffic and Log` -> `Traffic Analysis` -> `Total Requests` -> `Add Filter (Domain: your domain)`
 
+### Advanced Usage
+
+#### API
+
+- Create a `.github/api` file (content can be anything) as the target for API updates.
+- Use GitHub REST "Create or update file contents" to update that file. Each update creates a commit; put the long URL in the `message` field.
+- The `content` field must be Base64, and updating an existing file requires the `sha` field.
+- The short link remains `https://{your-domain}/{commit-sha}`.
+
+Docs: <https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents>
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  "https://api.github.com/repos/OWNER/REPO/contents/.github/api" \
+  -d '{
+    "message": "https://example.com/long-url",
+    "content": "cGluZwo=",
+    "sha": "FILE_SHA",
+    "branch": "master"
+  }'
+```
+
+#### Custom Slug
+
+- After the commit is created, use <https://github.com/not-an-aardvark/lucky-commit> to rewrite the last commit and customize the short slug.
+- This tool only supports hex characters (0-9, a-f), so the slug is hex-only.
+
 ## Demos
 
 ### Cloudflare
@@ -137,6 +166,35 @@ addEventListener("fetch", async (event) => {
 - Cloudflare(Pro): `域名` -> `分析和日志` -> `HTTP 流量` -> `添加筛选（域名：你的域名）`
 - Tencent EdgeOne: `EdgeOne` -> `指标分析` -> `L7 访问请求数` -> `添加筛选（域名：你的域名）`
 - Alibaba Cloud ESA: `ESA 控制台` -> `站点管理` -> `流量和日志分析` -> `流量分析` -> `总请求数` -> `添加筛选（域名：你的域名）`
+
+### 高级用法
+
+#### API
+
+- 创建一个 `.github/api` 文件（内容可随意），作为 API 更新的目标文件。
+- 通过 GitHub REST 的“Create or update file contents”接口更新该文件，每次更新都会生成一个 commit；把长链接写到 `message` 字段。
+- `content` 字段需要 Base64，更新已有文件时需要提供 `sha` 字段。
+- 短链接仍然是 `https://{你的域名}/{commit-sha}`。
+
+参考文档：<https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents>
+
+```bash
+curl -X PUT \
+  -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  "https://api.github.com/repos/OWNER/REPO/contents/.github/api" \
+  -d '{
+    "message": "https://example.com/long-url",
+    "content": "cGluZwo=",
+    "sha": "FILE_SHA",
+    "branch": "master"
+  }'
+```
+
+#### 自定义 Slug
+
+- 在 commit 生成后，使用 <https://github.com/not-an-aardvark/lucky-commit> 修改最后一次 commit，从而定制短链 slug。
+- 该工具只能生成 hex 字符（0-9、a-f），因此 slug 仅支持 hex。
 
 ## 演示
 
